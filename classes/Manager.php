@@ -36,16 +36,9 @@ class Manager
             $restaurantId = (integer)$data[0];
             $price = (float)$data[1];
             $items = array_slice($data, 2);
-            if (!array_key_exists($restaurantId, $menus)) {
-                $menus[$restaurantId] = new Menu();
-            }
             /** @var Menu $menu */
-            $menu = $menus[$restaurantId];
-            if (count($items) === 1) {
-                $menu->addItem($price, $items[0]);
-            } else {
-                $menu->addComboDeal($price, $items);
-            }
+            $menu = $this->getMenu($restaurantId, $menus);
+            $this->addEntryToMenu($items, $menu, $price);
             $comboPrice = $this->getPriceForRequestedItems($requestedItems, $menu);
             if ($comboPrice != static::$NOTFULFILLABLERESULT && $comboPrice < $bestPrice) {
                 $bestPrice = $comboPrice;
@@ -173,5 +166,38 @@ class Manager
             }
         }
         return $price;
+    }
+
+    /**
+     * Returns the menu for a specific restaurant.  If the menu is not already initialized,
+     * creates a new menu record.
+     *
+     * @param $restaurantId
+     * @param $menus
+     * @return Menu
+     */
+    private function getMenu($restaurantId, $menus)
+    {
+        if (!array_key_exists($restaurantId, $menus)) {
+            $menus[$restaurantId] = new Menu();
+        }
+        /** @var Menu $menu */
+        $menu = $menus[$restaurantId];
+        return $menu;
+    }
+
+    /**
+     * Adds an entry to the menu, either new menu item or a combo deal.
+     * @param $items
+     * @param $menu
+     * @param $price
+     */
+    private function addEntryToMenu($items, $menu, $price)
+    {
+        if (count($items) === 1) {
+            $menu->addItem($price, $items[0]);
+        } else {
+            $menu->addComboDeal($price, $items);
+        }
     }
 } 
