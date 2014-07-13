@@ -16,6 +16,7 @@ class Manager
     private static $VALIDITEMNAME = "/^[a-z_]+$/";
     private static $VALIDRESTAURANTID = "/^[0-9]+$/"; // This could be stronger, to make sure there are two or fewer digits after the decimal point.
     private static $VALIDPRICE = "/^[0-9\.]+$/";
+    private $menus = array(); // An array of menus.  The key is the restaurant id.
 
     public function runManager($fileName, array $requestedItems)
     {
@@ -27,7 +28,6 @@ class Manager
         }
         $bestRestaurant = null;
         $bestPrice = INF;
-        $menus = array(); // An array of menus.  The key is the restaurant id.
         while (($data = fgetcsv($handle, 1024)) !== FALSE) {
             if (!$this->validateLine($data)) {
                 // This line wasn't valid.  TODO - Should be logged somewhere.
@@ -37,8 +37,8 @@ class Manager
             $price = (float)$data[1];
             $items = array_slice($data, 2);
             /** @var Menu $menu */
-            $menu = $this->getMenu($restaurantId, $menus);
-            $this->addEntryToMenu($items, $menu, $price);
+            $menu = $this->getMenu($restaurantId);
+            $this->addEntryToMenu($menu, $items, $price);
             $comboPrice = $this->getPriceForRequestedItems($requestedItems, $menu);
             if ($comboPrice != static::$NOTFULFILLABLERESULT && $comboPrice < $bestPrice) {
                 $bestPrice = $comboPrice;
@@ -173,26 +173,26 @@ class Manager
      * creates a new menu record.
      *
      * @param $restaurantId
-     * @param $menus
+     * @param array $menus
      * @return Menu
      */
-    private function getMenu($restaurantId, $menus)
+    private function getMenu($restaurantId)
     {
-        if (!array_key_exists($restaurantId, $menus)) {
-            $menus[$restaurantId] = new Menu();
+        if (!array_key_exists($restaurantId, $this->menus)) {
+            $this->menus[$restaurantId] = new Menu();
         }
         /** @var Menu $menu */
-        $menu = $menus[$restaurantId];
-        return $menu;
+        return $this->menus[$restaurantId];
     }
 
     /**
      * Adds an entry to the menu, either new menu item or a combo deal.
-     * @param $items
-     * @param $menu
-     * @param $price
+     *
+     * @param Menu $menu
+     * @param array $items
+     * @param float $price
      */
-    private function addEntryToMenu($items, $menu, $price)
+    private function addEntryToMenu($menu, $items, $price)
     {
         if (count($items) === 1) {
             $menu->addItem($price, $items[0]);
