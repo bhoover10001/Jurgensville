@@ -17,6 +17,7 @@ class ManagerTest extends PHPUnit_Framework_TestCase
     private $menu;
 
     private $testDataFileName = "testData1.csv";
+    private $testDataFileNameWithInvalidLine = "testDataWithInvalidLine.csv";
 
     /**
      * Most basic case, pass in one item that exists and get the price
@@ -73,6 +74,15 @@ class ManagerTest extends PHPUnit_Framework_TestCase
     {
         $this->menu->addComboDeal(11.01, ["boston", "romaine"]);
         $this->assertEquals(11.01, $this->target->getPriceForRequestedItems(["boston", "romaine"], $this->menu));
+    }
+
+
+    /**
+     * The data passed in was not an array
+     */
+    public function testValidateLine_validLine_not_array()
+    {
+        $this->assertFalse($this->target->validateLine("bad Data"));
     }
 
     /**
@@ -169,6 +179,16 @@ class ManagerTest extends PHPUnit_Framework_TestCase
             $this->target->runManager($this->testDataFileName, ["fancy_european_water", "extreme_fajita"]));
     }
 
+    /**
+     * In this case, there is a line in the test data that isn't valid.  The test should be able to continue
+     *
+     */
+    public function testRunManager_test_data_file_has_invalid_data()
+    {
+        $this->assertEquals("6, 11",
+            $this->target->runManager($this->testDataFileNameWithInvalidLine, ["fancy_european_water", "extreme_fajita"]));
+    }
+
     /** @before */
     protected function createObjects()
     {
@@ -192,7 +212,8 @@ class ManagerTest extends PHPUnit_Framework_TestCase
     /** @before */
     protected function setupFileName()
     {
-            $this->testDataFileName =  __DIR__ . "/" . $this->testDataFileName;
+        $this->testDataFileName =  __DIR__ . "/" . $this->testDataFileName;
+        $this->testDataFileNameWithInvalidLine =  __DIR__ . "/" . $this->testDataFileNameWithInvalidLine;
     }
 
 }

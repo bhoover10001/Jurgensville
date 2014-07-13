@@ -25,11 +25,13 @@ class Manager
         try {
             $handle = fopen($fileName, "r");
         } catch (Exception $e) {
-            die($fileName . " was not found " . $e->getMessage());
+            throw new Exception("File " . $fileName . " was not found");
         }
         $bestRestaurant = null;
         $bestPrice = INF;
         while (($data = fgetcsv($handle, 1024)) !== FALSE) {
+            // for each line, validate the data, determine if it's relevant to the requested items.  If so,
+            // put it into the appropriate menu and then calculate the best price for the changed menu.
             if (!$this->validateLine($data)) {
                 // This line wasn't valid.  TODO - Should be logged somewhere.
                 continue;
@@ -238,4 +240,5 @@ class Manager
             $menu->addComboDeal($price, $items);
         }
     }
+
 } 

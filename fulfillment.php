@@ -8,8 +8,8 @@
 
 require_once("lib.php");
 
-if (count($argv) < 2) {
-    die("There should be at least two arguments.  The first argument is the file name");
+if (count($argv) < 3) {
+    throw new RuntimeException("There should be at least three arguments.  The second argument is the file name");
 }
 $filename = $argv[1];
 $requestedItems = array_slice($argv, 2);
