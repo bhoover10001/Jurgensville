@@ -45,6 +45,7 @@ After he had scanned through all the records, he would have a single notecard wi
 Well, we just had to do something, and the process worked for Old Fred, so we just decided to automate his workflow.
 
 Now, the assumptions:
+
 Not all of Fred's note cards were complete or valid.  Fred was getting a little.... odd.. at the end... and would sometimes just randomly jot down stuff on one of his note cards.  Well, we didn't have time to review all the cards, so we just computerized them all.
 
 Just like Fred, we always start from the note cards.  None of that silly indexing or catalogs for us.  That doesn't mean that we couldn't load the data somewhere, like a card catalog, index by item or restaurant, but then we would need so many more notecards.  Now, being a little clever, and having, well, spied on the town down the road, we know that we might need to make sure that the system might be a little faster in the future, so we did architect the system to improve the data loader in the future, but there are so many restaurants in Jurgensville, we probably won't ever have time for that.
