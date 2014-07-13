@@ -5,7 +5,8 @@
  * Date: 7/11/2014
  * Time: 3:58 PM
  */
-require_once("../lib.php");
+set_include_path("../");
+require_once("lib.php");
 
 class RestaurantTest extends PHPUnit_Framework_TestCase
 {

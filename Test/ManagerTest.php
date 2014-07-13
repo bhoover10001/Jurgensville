@@ -5,7 +5,8 @@
  * Date: 7/12/2014
  * Time: 10:46 AM
  */
-require_once("../lib.php");
+set_include_path("../");
+require_once("lib.php");
 
 class ManagerTest extends PHPUnit_Framework_TestCase
 {
@@ -14,6 +15,8 @@ class ManagerTest extends PHPUnit_Framework_TestCase
     private $target;
     /** @var  Menu */
     private $menu;
+
+    private $testDataFileName = "testData1.csv";
 
     /**
      * Most basic case, pass in one item that exists and get the price
@@ -143,7 +146,7 @@ class ManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testRunManager_use_case_1()
     {
-        $this->assertEquals("2, 11.5", $this->target->runManager("testData1.csv", ["burger", "tofu_log"]));
+        $this->assertEquals("2, 11.5", $this->target->runManager($this->testDataFileName, ["burger", "tofu_log"]));
     }
 
     /**
@@ -153,7 +156,7 @@ class ManagerTest extends PHPUnit_Framework_TestCase
     public function testRunManager_use_case_2()
     {
         $this->assertEquals(Manager::$NOTFULFILLABLERESULT,
-            $this->target->runManager("testData1.csv", ["chef_salad", "wine_spritzer"]));
+            $this->target->runManager($this->testDataFileName, ["chef_salad", "wine_spritzer"]));
     }
 
     /**
@@ -163,7 +166,7 @@ class ManagerTest extends PHPUnit_Framework_TestCase
     public function testRunManager_use_case_3()
     {
         $this->assertEquals("6, 11",
-            $this->target->runManager("testData1.csv", ["fancy_european_water", "extreme_fajita"]));
+            $this->target->runManager($this->testDataFileName, ["fancy_european_water", "extreme_fajita"]));
     }
 
     /** @before */
@@ -184,6 +187,12 @@ class ManagerTest extends PHPUnit_Framework_TestCase
     protected function provideStartingPackages()
     {
         $this->menu->addComboDeal(15.01, ["boston", "red_leaf"]);
+    }
+
+    /** @before */
+    protected function setupFileName()
+    {
+            $this->testDataFileName =  __DIR__ . "/" . $this->testDataFileName;
     }
 
 }
