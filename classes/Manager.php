@@ -35,14 +35,16 @@ class Manager
             }
             $restaurantId = (integer)$data[0];
             $price = (float)$data[1];
-            $items = array_slice($data, 2);
-            /** @var Menu $menu */
-            $menu = $this->getMenu($restaurantId);
-            $this->addEntryToMenu($menu, $items, $price);
-            $comboPrice = $this->getPriceForRequestedItems($requestedItems, $menu);
-            if ($comboPrice != static::$NOTFULFILLABLERESULT && $comboPrice < $bestPrice) {
-                $bestPrice = $comboPrice;
-                $bestRestaurant = $restaurantId;
+            $items = $this->cleanData(array_slice($data, 2));
+            if ($this->isEntryRelevant($items, $requestedItems)) {
+                /** @var Menu $menu */
+                $menu = $this->getMenu($restaurantId);
+                $this->addEntryToMenu($menu, $items, $price);
+                $comboPrice = $this->getPriceForRequestedItems($requestedItems, $menu);
+                if ($comboPrice != static::$NOTFULFILLABLERESULT && $comboPrice < $bestPrice) {
+                    $bestPrice = $comboPrice;
+                    $bestRestaurant = $restaurantId;
+                }
             }
         }
         fclose($handle);
@@ -122,6 +124,41 @@ class Manager
         return $price;
     }
 
+    /**
+     * This is a bit of a micro-optimization.  In general, many of the entries won't be relevant
+     * to fulfilling the requested items list.  Since we are loading and getting the best price at the same time,
+     * this eliminates the need to either load or calc the best price.
+     *
+     * An item is relevant if it has an entry that in the requested item list.
+     * @param $items
+     * @param $requestedItems
+     * @return boolean
+     */
+    private function isEntryRelevant($items, $requestedItems) {
+        foreach ($items as $item) {
+            foreach ($requestedItems as $requestedItem) {
+                if ($item === $requestedItem) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Takes an array of string and returns an array with all leading spaces removed.
+     *
+     * @param array $data
+     * @return array
+     */
+    private function cleanData($data) {
+        $returnData = array();
+        foreach ($data as $entry) {
+            $returnData[] = trim($entry);
+        }
+        return $returnData;
+    }
     /**
      * Checks the packages and see if the requested items can be fulfilled from any combo meal or from
      * a combination of a combo meal and ala-carte items, and the price has to be better than the already

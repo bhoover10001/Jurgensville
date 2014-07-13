@@ -23,7 +23,7 @@ class ComboDeal
         $this->price = $price;
         // this is really creating a hashset, from the passed in array.
         foreach ($items as $item) {
-            $this->items[trim($item)] = trim($item);
+            $this->items[$item] = $item;
         }
     }
 
