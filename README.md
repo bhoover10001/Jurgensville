@@ -7,6 +7,7 @@ To run unit tests, need to have PHPUnit installed
 ## Execution
 ### Command Line Execution
 from the install directory:
+
 php fulfillment.php pathToDataFile desiredItem1 desiredItem2 ... desiredItemX
 ## Requirements
 [Link to PDF Requirement Document](https://github.com/bhoover10001/Jurgensville/blob/master/SWECodingChallenge.pdf?raw=true)
