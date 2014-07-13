@@ -20,6 +20,7 @@ class Manager
 
     public function runManager($fileName, array $requestedItems)
     {
+        $requestedItems = $this->cleanData($requestedItems);
         ini_set('auto_detect_line_endings', TRUE);
         try {
             $handle = fopen($fileName, "r");
