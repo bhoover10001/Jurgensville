@@ -60,6 +60,21 @@ class Manager
     }
 
     /**
+     * Takes an array of string and returns an array with all leading spaces removed.
+     *
+     * @param array $data
+     * @return array
+     */
+    private function cleanData($data)
+    {
+        $returnData = array();
+        foreach ($data as $entry) {
+            $returnData[] = trim($entry);
+        }
+        return $returnData;
+    }
+
+    /**
      * Makes sure that the line being provided from the CSV is valid.  Returns true if it's valid.  false if
      * it's not.
      * From the specifications, a valid line has:
@@ -70,6 +85,7 @@ class Manager
      * consist of only lower case letters and underscores.
      *
      * @param array $data
+     * @return boolean
      */
     public function validateLine($data)
     {
@@ -91,6 +107,60 @@ class Manager
             }
         }
         return true;
+    }
+
+    /**
+     * This is a bit of a micro-optimization.  In general, many of the entries won't be relevant
+     * to fulfilling the requested items list.  Since we are loading and getting the best price at the same time,
+     * this eliminates the need to either load or calc the best price.
+     *
+     * An item is relevant if it has an entry that in the requested item list.
+     * @param $items
+     * @param $requestedItems
+     * @return boolean
+     */
+    private function isEntryRelevant($items, $requestedItems)
+    {
+        foreach ($items as $item) {
+            foreach ($requestedItems as $requestedItem) {
+                if ($item === $requestedItem) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the menu for a specific restaurant.  If the menu is not already initialized,
+     * creates a new menu record.
+     *
+     * @param $restaurantId
+     * @return Menu
+     */
+    private function getMenu($restaurantId)
+    {
+        if (!array_key_exists($restaurantId, $this->menus)) {
+            $this->menus[$restaurantId] = new Menu();
+        }
+        /** @var Menu $menu */
+        return $this->menus[$restaurantId];
+    }
+
+    /**
+     * Adds an entry to the menu, either new menu item or a combo deal.
+     *
+     * @param Menu $menu
+     * @param array $items
+     * @param float $price
+     */
+    private function addEntryToMenu($menu, $items, $price)
+    {
+        if (count($items) === 1) {
+            $menu->addItem($price, $items[0]);
+        } else {
+            $menu->addComboDeal($price, $items);
+        }
     }
 
     /**
@@ -127,41 +197,6 @@ class Manager
         return $price;
     }
 
-    /**
-     * This is a bit of a micro-optimization.  In general, many of the entries won't be relevant
-     * to fulfilling the requested items list.  Since we are loading and getting the best price at the same time,
-     * this eliminates the need to either load or calc the best price.
-     *
-     * An item is relevant if it has an entry that in the requested item list.
-     * @param $items
-     * @param $requestedItems
-     * @return boolean
-     */
-    private function isEntryRelevant($items, $requestedItems) {
-        foreach ($items as $item) {
-            foreach ($requestedItems as $requestedItem) {
-                if ($item === $requestedItem) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * Takes an array of string and returns an array with all leading spaces removed.
-     *
-     * @param array $data
-     * @return array
-     */
-    private function cleanData($data) {
-        $returnData = array();
-        foreach ($data as $entry) {
-            $returnData[] = trim($entry);
-        }
-        return $returnData;
-    }
     /**
      * Checks the packages and see if the requested items can be fulfilled from any combo meal or from
      * a combination of a combo meal and ala-carte items, and the price has to be better than the already
@@ -206,39 +241,6 @@ class Manager
             }
         }
         return $price;
-    }
-
-    /**
-     * Returns the menu for a specific restaurant.  If the menu is not already initialized,
-     * creates a new menu record.
-     *
-     * @param $restaurantId
-     * @param array $menus
-     * @return Menu
-     */
-    private function getMenu($restaurantId)
-    {
-        if (!array_key_exists($restaurantId, $this->menus)) {
-            $this->menus[$restaurantId] = new Menu();
-        }
-        /** @var Menu $menu */
-        return $this->menus[$restaurantId];
-    }
-
-    /**
-     * Adds an entry to the menu, either new menu item or a combo deal.
-     *
-     * @param Menu $menu
-     * @param array $items
-     * @param float $price
-     */
-    private function addEntryToMenu($menu, $items, $price)
-    {
-        if (count($items) === 1) {
-            $menu->addItem($price, $items[0]);
-        } else {
-            $menu->addComboDeal($price, $items);
-        }
     }
 
 } 
