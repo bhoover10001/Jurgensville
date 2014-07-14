@@ -13,8 +13,7 @@
  * sets up the autoloader
  * @param $class
  */
-function my_autoloader($class)
-{
+function my_autoloader($class) {
     // This is necessary to be able to run code coverage.
     if (strpos($class, "PHPUnit") !== false || strpos($class, "ClassLoader")) {
         return;

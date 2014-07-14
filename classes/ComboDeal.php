@@ -8,8 +8,7 @@
  *
  * a Combo Deal is when a set of items are combined with a special price point.
  */
-class ComboDeal
-{
+class ComboDeal {
     private $price; // The price of the packageMeal
     private $items = Array(); // This is going to be a set of items.  The value is not necessary
 
@@ -18,8 +17,7 @@ class ComboDeal
      * @param $price
      * @param array $items
      */
-    public function __construct($price, array $items)
-    {
+    public function __construct($price, array $items) {
         $this->price = $price;
         // this is really creating a hashset, from the passed in array.
         foreach ($items as $item) {
@@ -27,16 +25,14 @@ class ComboDeal
         }
     }
 
-    public function getPrice()
-    {
+    public function getPrice() {
         return $this->price;
     }
 
     /**
      * @return array
      */
-    public function getItems()
-    {
+    public function getItems() {
         return $this->items;
     }
 } 

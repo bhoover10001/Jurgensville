@@ -3,8 +3,7 @@
 /**
  * Class Menu
  */
-class Menu
-{
+class Menu {
     private $items = array(); // An of items by itemName.  The value is the price.  For a more complex object this would be a more complex object
     private $comboDeals = array();
 
@@ -13,8 +12,7 @@ class Menu
      * @param $price
      * @param $menuItem
      */
-    public function addItem($price, $menuItem)
-    {
+    public function addItem($price, $menuItem) {
         $this->items[trim($menuItem)] = $price;
     }
 
@@ -23,8 +21,7 @@ class Menu
      * @param $price
      * @param array $packageItems
      */
-    public function addComboDeal($price, array $packageItems)
-    {
+    public function addComboDeal($price, array $packageItems) {
         $this->comboDeals[] = new ComboDeal($price, $packageItems);
     }
 
@@ -32,8 +29,7 @@ class Menu
      * Gets a list of all the package meals for this menu
      * @return array
      */
-    public function getComboDeals()
-    {
+    public function getComboDeals() {
         return $this->comboDeals;
     }
 
@@ -41,8 +37,7 @@ class Menu
      * Gets a list of all the items on the menu
      * @return array
      */
-    public function getItems()
-    {
+    public function getItems() {
         return $this->items;
     }
 

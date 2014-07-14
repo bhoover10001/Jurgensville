@@ -18,8 +18,7 @@ class Manager
     private static $VALIDPRICE = "/^[0-9\.]+$/";
     private $menus = array(); // An array of menus.  The key is the restaurant id.
 
-    public function runManager($fileName, array $requestedItems)
-    {
+    public function runManager($fileName, array $requestedItems) {
         $requestedItems = $this->cleanData($requestedItems);
         ini_set('auto_detect_line_endings', TRUE);
         try {
@@ -65,8 +64,7 @@ class Manager
      * @param array $data
      * @return array
      */
-    private function cleanData($data)
-    {
+    private function cleanData($data) {
         $returnData = array();
         foreach ($data as $entry) {
             $returnData[] = trim($entry);
@@ -87,8 +85,7 @@ class Manager
      * @param array $data
      * @return boolean
      */
-    public function validateLine($data)
-    {
+    public function validateLine($data) {
         if (!is_array($data)) {
             return false;
         }
@@ -119,8 +116,7 @@ class Manager
      * @param $requestedItems
      * @return boolean
      */
-    private function isEntryRelevant($items, $requestedItems)
-    {
+    private function isEntryRelevant($items, $requestedItems) {
         foreach ($items as $item) {
             foreach ($requestedItems as $requestedItem) {
                 if ($item === $requestedItem) {
@@ -138,8 +134,7 @@ class Manager
      * @param $restaurantId
      * @return Menu
      */
-    private function getMenu($restaurantId)
-    {
+    private function getMenu($restaurantId) {
         if (!array_key_exists($restaurantId, $this->menus)) {
             $this->menus[$restaurantId] = new Menu();
         }
@@ -154,8 +149,7 @@ class Manager
      * @param array $items
      * @param float $price
      */
-    private function addEntryToMenu($menu, $items, $price)
-    {
+    private function addEntryToMenu($menu, $items, $price) {
         if (count($items) === 1) {
             $menu->addItem($price, $items[0]);
         } else {
@@ -171,8 +165,7 @@ class Manager
      * @param Menu $menu
      * @return mixed -
      */
-    public function getPriceForRequestedItems(array $requestedItems, Menu $menu)
-    {
+    public function getPriceForRequestedItems(array $requestedItems, Menu $menu) {
         /** @var float $price */
         $price = INF;
         $comboPrice = 0;
@@ -208,8 +201,7 @@ class Manager
      * @param menu $menu
      * @return float
      */
-    private function getPriceForComboDeal($bestPrice, array $requestedItems, menu $menu)
-    {
+    private function getPriceForComboDeal($bestPrice, array $requestedItems, menu $menu) {
         $price = $bestPrice;
         /** @var  ComboDeal $comboDeal */
         foreach ($menu->getComboDeals() as $comboDeal) {

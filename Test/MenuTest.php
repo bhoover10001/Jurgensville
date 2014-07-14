@@ -8,16 +8,14 @@
 set_include_path("../");
 require_once("lib.php");
 
-class RestaurantTest extends PHPUnit_Framework_TestCase
-{
+class RestaurantTest extends PHPUnit_Framework_TestCase {
     /** @var  Menu */
     private $target;
 
     /**
      * Tests adding an item menu
      */
-    public function testAddItem()
-    {
+    public function testAddItem() {
         $expectedCount = count($this->target->getItems()) + 1; // The initializer is adding items already, so get the expected count
         $this->target->addItem(10.00, "hamburger");
         $this->assertEquals($expectedCount, count($this->target->getItems()));
@@ -27,8 +25,7 @@ class RestaurantTest extends PHPUnit_Framework_TestCase
     /**
      * Tests creating a new mealCombo
      */
-    public function testSetPackage()
-    {
+    public function testSetPackage() {
         $expectedCount = count($this->target->getComboDeals()) + 1; // Since the packages might be initialized in advance
         $this->target->addComboDeal(10.02, ["hamburger", "coca_cola", "garlic_fries"]);
         $this->assertEquals($expectedCount, count($this->target->getComboDeals()));
@@ -41,24 +38,19 @@ class RestaurantTest extends PHPUnit_Framework_TestCase
     }
 
     /** @before */
-    protected function createMenu()
-    {
+    protected function createMenu() {
         $this->target = new Menu();
     }
 
     /** @before */
-    protected function provideStartingItems()
-    {
+    protected function provideStartingItems() {
         $this->target->addItem(10.01, "boston");
         $this->target->addItem(20.01, "romaine");
     }
 
     /** @before */
-    protected function provideStartingPackages()
-    {
+    protected function provideStartingPackages() {
         $this->target->addComboDeal(15.01, ["boston", "red_leaf"]);
     }
-
-
 }
  
