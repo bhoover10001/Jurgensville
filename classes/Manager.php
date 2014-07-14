@@ -16,9 +16,10 @@ class Manager {
     // Regular expressions to validate each line
     private static $VALIDITEMNAME = "/^[a-z_]+$/";
     private static $VALIDRESTAURANTID = "/^[0-9]+$/";
-
     private static $VALIDPRICE = "/^[0-9]+(\.[0-9]{1,2})?$/";
-    private $menus = array(); // An array of menus.  The key is the restaurant id.
+
+    // An array of menus.  The key is the restaurant id.
+    private $menus = array();
 
     public function runManager($fileName, array $requestedItems) {
         $requestedItems = $this->cleanData($requestedItems);

@@ -9,8 +9,11 @@
  * a Combo Deal is when a set of items are combined with a special price point.
  */
 class ComboDeal {
-    private $price; // The price of the packageMeal
-    private $items = Array(); // This is going to be a set of items.  The value is not necessary
+    // The price of the packageMeal
+    private $price;
+
+    // This is going to be a set of items.  Since this is a set, the value of the array is not important.
+    private $items = Array();
 
     /**
      * Creates a new package meal
