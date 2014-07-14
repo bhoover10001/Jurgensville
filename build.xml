@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Set some basic project information and targets -->
 <project name="CodeProjectV1" default="phpunit">
-    <property name="testFolder" value="${basedir}\Test"/>
+    <property name="testFolder" value="${basedir}\Test\"/>
     <property name="logFolder" value="${basedir}\Logs"/>
     <property name="exe.phpunit" value="phpunit.bat"/>
     <target name="phpunit">
         <exec executable="${exe.phpunit}" failonerror="true" description="Run unit tests with PHPUnit">
-            <arg value="Test/"/>
+            <arg line="--log-junit ${logFolder}/phpunit.xml --coverage-clover ${logFolder}/coverage.xml ${testFolder}" />
         </exec>
     </target>
 </project>
