@@ -218,15 +218,15 @@ class Manager
                     // The combo meal has this particular item.
                     // It can be overriden later in the process if any item is not available
                     $canBeFulfilled = true;
-                } else if (!array_key_exists($requestedItem, $menu->getItems())) {
+                } else if (array_key_exists($requestedItem, $menu->getItems())) {
+                    // There is an ala-carte item that is necessary to completely fulfill the order, so
+                    // add its price to the total meal.
+                    $comboMealPrice += $menu->getItems()[$requestedItem];
+                } else {
                     // this package cannot fulfill the requested items, since neither the package or
                     // the ala-carte items have the requested item.
                     $canBeFulfilled = false;
                     break;
-                } else {
-                    // There is an ala-carte item that is necessary to completely fulfill the order, so
-                    // add its price to the total meal.
-                    $comboMealPrice += $menu->getItems()[$requestedItem];
                 }
             }
             if ($canBeFulfilled && $comboMealPrice < $price) {
