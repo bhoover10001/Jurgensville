@@ -29,7 +29,7 @@ class Manager
         }
         $bestRestaurant = null;
         $bestPrice = INF;
-        while (($data = fgetcsv($handle, 1024)) !== FALSE) {
+        while ($data = fgetcsv($handle, 1024)) {
             // for each line, validate the data, determine if it's relevant to the requested items.  If so,
             // put it into the appropriate menu and then calculate the best price for the changed menu.
             if (!$this->validateLine($data)) {
