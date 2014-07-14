@@ -214,26 +214,27 @@ class Manager
         /** @var  ComboDeal $comboDeal */
         foreach ($menu->getComboDeals() as $comboDeal) {
             if ($price < $comboDeal->getPrice()) {
-                continue; // This package can't be better than the best available price already found
+                // This package can't be better than the best available price already found, so move onto the
+                // next package
+                continue;
             }
             $comboMealPrice = $comboDeal->getPrice();
             $canBeFulfilled = false;
             /** @var string $requestedItem */
             foreach ($requestedItems as $requestedItem) {
-                if (!array_key_exists($requestedItem, $comboDeal->getItems())) {
-                    if (!array_key_exists($requestedItem, $menu->getItems())) {
-                        // this package cannot fulfill the requested items, since neither the package or
-                        // the ala-carte items have the requested item.
-                        $canBeFulfilled = false;
-                        break;
-                    }
-                    $comboMealPrice += $menu->getItems()[$requestedItem];
-
-                } else {
-                    // this is really just temporary to indicate that it might be possible to fulfill the
-                    // request from the package.  It can be overriden later in the process if any item is not
-                    // available
+                if (array_key_exists($requestedItem, $comboDeal->getItems())) {
+                    // The combo meal has this particular item.
+                    // It can be overriden later in the process if any item is not available
                     $canBeFulfilled = true;
+                } else if (!array_key_exists($requestedItem, $menu->getItems())) {
+                    // this package cannot fulfill the requested items, since neither the package or
+                    // the ala-carte items have the requested item.
+                    $canBeFulfilled = false;
+                    break;
+                } else {
+                    // There is an ala-carte item that is necessary to completely fulfill the order, so
+                    // add its price to the total meal.
+                    $comboMealPrice += $menu->getItems()[$requestedItem];
                 }
             }
             if ($canBeFulfilled && $comboMealPrice < $price) {
