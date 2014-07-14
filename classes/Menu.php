@@ -11,21 +11,21 @@ class Menu
     /**
      * adds a new item to the menu
      * @param $price
-     * @param $menu_item
+     * @param $menuItem
      */
-    public function addItem($price, $menu_item)
+    public function addItem($price, $menuItem)
     {
-        $this->items[trim($menu_item)] = $price;
+        $this->items[trim($menuItem)] = $price;
     }
 
     /**
      * adds a new item to the menu
      * @param $price
-     * @param array $package_items
+     * @param array $packageItems
      */
-    public function addComboDeal($price, array $package_items)
+    public function addComboDeal($price, array $packageItems)
     {
-        $this->comboDeals[] = new ComboDeal($price, $package_items);
+        $this->comboDeals[] = new ComboDeal($price, $packageItems);
     }
 
     /**
