@@ -9,13 +9,15 @@
  * This is the business rule manager for the application.
  * It's callsed
  */
-class Manager
-{
+class Manager {
 
     public static $NOTFULFILLABLERESULT = "nil";
+
+    // Regular expressions to validate each line
     private static $VALIDITEMNAME = "/^[a-z_]+$/";
-    private static $VALIDRESTAURANTID = "/^[0-9]+$/"; // This could be stronger, to make sure there are two or fewer digits after the decimal point.
-    private static $VALIDPRICE = "/^[0-9\.]+$/";
+    private static $VALIDRESTAURANTID = "/^[0-9]+$/";
+
+    private static $VALIDPRICE = "/^[0-9]+(\.[0-9]{1,2})?$/";
     private $menus = array(); // An array of menus.  The key is the restaurant id.
 
     public function runManager($fileName, array $requestedItems) {
@@ -35,18 +37,20 @@ class Manager
                 // This line wasn't valid.  TODO - Should be logged somewhere.
                 continue;
             }
+            if ($this->isEntryRelevant($data, $requestedItems)) {
+                // There are no entries on this line that can fulfill the order.
+                continue;
+            }
             $restaurantId = (integer)$data[0];
             $price = (float)$data[1];
-            $items = $this->cleanData(array_slice($data, 2));
-            if ($this->isEntryRelevant($items, $requestedItems)) {
-                /** @var Menu $menu */
-                $menu = $this->getMenu($restaurantId);
-                $this->addEntryToMenu($menu, $items, $price);
-                $comboPrice = $this->getPriceForRequestedItems($requestedItems, $menu);
-                if ($comboPrice != static::$NOTFULFILLABLERESULT && $comboPrice < $bestPrice) {
-                    $bestPrice = $comboPrice;
-                    $bestRestaurant = $restaurantId;
-                }
+            $items = array_slice($data, 2);
+            /** @var Menu $menu */
+            $menu = $this->getMenu($restaurantId);
+            $this->addEntryToMenu($menu, $items, $price);
+            $comboPrice = $this->getPriceForRequestedItems($requestedItems, $menu);
+            if ($comboPrice != static::$NOTFULFILLABLERESULT && $comboPrice < $bestPrice) {
+                $bestPrice = $comboPrice;
+                $bestRestaurant = $restaurantId;
             }
         }
         fclose($handle);

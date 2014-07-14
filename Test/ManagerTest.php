@@ -112,6 +112,26 @@ class ManagerTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
+     * In this case, the second item has too many digits
+     */
+    public function testValidateLine_second_item_too_many_digits() {
+        $this->assertFalse($this->target->validateLine([1, 10.001, "boston"]));
+    }
+
+    /**
+     * In this case, the second item has no decimal point
+     */
+    public function testValidateLine_second_item_no_decimal() {
+        $this->assertTrue($this->target->validateLine([1, 10, "boston"]));
+    }
+
+    /**
+     * In this case, the second item has too many digits
+     */
+    public function testValidateLine_second_item_trailing_decimal() {
+        $this->assertTrue($this->target->validateLine([1, 10., "boston"]));
+    }
+    /**
      * In this case, the 3rd item isn't well formed.  It has a capital Letter
      */
     public function testValidateLine_one_item_not_valid() {
