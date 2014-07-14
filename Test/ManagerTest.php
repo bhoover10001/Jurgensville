@@ -159,6 +159,8 @@ class ManagerTest extends PHPUnit_Framework_TestCase {
      */
     public function testRunManager_use_case_1() {
         $this->assertEquals("2, 11.5", $this->target->runManager($this->testDataFileName, ["burger", "tofu_log"]));
+        $this->assertEquals("2", $this->target->getBestRestaurant());
+        $this->assertEquals("11.5", $this->target->getBestPrice());
     }
 
     /**
@@ -168,6 +170,8 @@ class ManagerTest extends PHPUnit_Framework_TestCase {
     public function testRunManager_use_case_2() {
         $this->assertEquals(Manager::$NOTFULFILLABLERESULT,
             $this->target->runManager($this->testDataFileName, ["chef_salad", "wine_spritzer"]));
+        $this->assertNull($this->target->getBestRestaurant());
+        $this->assertEquals(INF, $this->target->getBestPrice());
     }
 
     /**
@@ -177,6 +181,8 @@ class ManagerTest extends PHPUnit_Framework_TestCase {
     public function testRunManager_use_case_3() {
         $this->assertEquals("6, 11",
             $this->target->runManager($this->testDataFileName, ["fancy_european_water", "extreme_fajita"]));
+        $this->assertEquals(6, $this->target->getBestRestaurant());
+        $this->assertEquals(11, $this->target->getBestPrice());
     }
 
     /**

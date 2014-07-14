@@ -21,6 +21,9 @@ class Manager {
     // An array of menus.  The key is the restaurant id.
     private $menus = array();
 
+    private $bestRestaurant = null;
+    private $bestPrice = INF;
+
     public function runManager($fileName, array $requestedItems) {
         $requestedItems = $this->cleanData($requestedItems);
         ini_set('auto_detect_line_endings', TRUE);
@@ -29,8 +32,6 @@ class Manager {
         } catch (Exception $e) {
             throw new Exception("File " . $fileName . " was not found");
         }
-        $bestRestaurant = null;
-        $bestPrice = INF;
         while ($data = fgetcsv($handle, 1024)) {
             // for each line, validate the data, determine if it's relevant to the requested items.  If so,
             // put it into the appropriate menu and then calculate the best price for the changed menu.
@@ -42,23 +43,13 @@ class Manager {
                 // There are no entries on this line that can fulfill the order.
                 continue;
             }
-            $restaurantId = (integer)$data[0];
-            $price = (float)$data[1];
-            $items = array_slice($data, 2);
-            /** @var Menu $menu */
-            $menu = $this->getMenu($restaurantId);
-            $this->addEntryToMenu($menu, $items, $price);
-            $comboPrice = $this->getPriceForRequestedItems($requestedItems, $menu);
-            if ($comboPrice != static::$NOTFULFILLABLERESULT && $comboPrice < $bestPrice) {
-                $bestPrice = $comboPrice;
-                $bestRestaurant = $restaurantId;
-            }
+            $this->findBestPrice($requestedItems, $data);
         }
         fclose($handle);
-        if (is_infinite($bestPrice)) {
+        if (is_infinite($this->bestPrice)) {
             return static::$NOTFULFILLABLERESULT;
         } else {
-            return $bestRestaurant . ", " . $bestPrice;
+            return $this->bestRestaurant . ", " . $this->bestPrice;
         }
 
     }
@@ -199,7 +190,7 @@ class Manager {
      * Checks the packages and see if the requested items can be fulfilled from any combo meal or from
      * a combination of a combo meal and ala-carte items, and the price has to be better than the already
      * passed in price.
-     * If it can be fulfilled, and the price is better, then returns the combination price.
+     * If it can be fulfilled, and the price is better then the ala-carte price, returns the better price.
      *
      * @param $bestPrice
      * @param array $requestedItems
@@ -211,7 +202,7 @@ class Manager {
         /** @var  ComboDeal $comboDeal */
         foreach ($menu->getComboDeals() as $comboDeal) {
             if ($price < $comboDeal->getPrice()) {
-                // This package can't be better than the best available price already found, so move onto the
+                // This package can't be better than the best available price already found on this menu, so move onto the
                 // next package
                 continue;
             }
@@ -239,6 +230,40 @@ class Manager {
             }
         }
         return $price;
+    }
+
+    /**
+     * Determines if the menu associated with the current data is better than the best price and if so, sets the
+     * best restaurant and best price.
+     * @param array $requestedItems
+     * @param $data
+     */
+    private function findBestPrice(array $requestedItems, $data) {
+        $restaurantId = (integer)$data[0];
+        $price = (float)$data[1];
+        $items = $this->cleanData(array_slice($data, 2));
+        /** @var Menu $menu */
+        $menu = $this->getMenu($restaurantId);
+        $this->addEntryToMenu($menu, $items, $price);
+        $comboPrice = $this->getPriceForRequestedItems($requestedItems, $menu);
+        if ($comboPrice != static::$NOTFULFILLABLERESULT && $comboPrice < $this->bestPrice) {
+            $this->bestPrice = $comboPrice;
+            $this->bestRestaurant = $restaurantId;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getBestRestaurant() {
+        return $this->bestRestaurant;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBestPrice() {
+        return $this->bestPrice;
     }
 
 } 
