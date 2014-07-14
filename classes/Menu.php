@@ -4,7 +4,8 @@
  * Class Menu
  */
 class Menu {
-    private $items = array(); // An of items by itemName.  The value is the price.  For a more complex object this would be a more complex object
+    // An of items by itemName.  The value is the price.  For a more complex object this would be a more complex object
+    private $items = array();
     private $comboDeals = array();
 
     /**

@@ -192,13 +192,13 @@ class Manager {
      * passed in price.
      * If it can be fulfilled, and the price is better then the ala-carte price, returns the better price.
      *
-     * @param $bestPrice
+     * @param $bestPriceFromMenu
      * @param array $requestedItems
      * @param menu $menu
      * @return float
      */
-    private function getPriceForComboDeal($bestPrice, array $requestedItems, menu $menu) {
-        $price = $bestPrice;
+    private function getPriceForComboDeal($bestPriceFromMenu, array $requestedItems, menu $menu) {
+        $price = $bestPriceFromMenu;
         /** @var  ComboDeal $comboDeal */
         foreach ($menu->getComboDeals() as $comboDeal) {
             if ($price < $comboDeal->getPrice()) {
